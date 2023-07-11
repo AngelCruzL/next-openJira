@@ -14,7 +14,7 @@ export default function handler(
       return getEntries(res);
 
     case 'POST':
-      return res.status(200).json({ message: 'POST' });
+      return postEntry(req, res);
 
     default:
       return res.status(400).json({ message: 'Bad request' });
@@ -27,4 +27,25 @@ async function getEntries(res: NextApiResponse<Data>) {
   await db.disconnect();
 
   return res.status(200).json(entries);
+}
+
+async function postEntry(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const { description = '' } = req.body;
+  const entry = new Entry({
+    description,
+    createdAt: new Date(),
+  });
+
+  try {
+    await db.connect();
+    const createdEntry = await entry.save();
+    await db.disconnect();
+
+    return res.status(201).json(createdEntry);
+  } catch (error) {
+    await db.disconnect();
+    console.log(error);
+
+    return res.status(500).json({ message: 'Error creating entry' });
+  }
 }
