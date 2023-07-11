@@ -33,6 +33,7 @@ async function postEntry(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { description = '' } = req.body;
   const entry = new Entry({
     description,
+    status: 'pending',
     createdAt: new Date(),
   });
 
@@ -42,9 +43,12 @@ async function postEntry(req: NextApiRequest, res: NextApiResponse<Data>) {
     await db.disconnect();
 
     return res.status(201).json(createdEntry);
-  } catch (error) {
+  } catch (error: any) {
     await db.disconnect();
     console.log(error);
+
+    if (error.errors?.description?.kind === 'required')
+      return res.status(400).json({ message: 'Description is required' });
 
     return res.status(500).json({ message: 'Error creating entry' });
   }
