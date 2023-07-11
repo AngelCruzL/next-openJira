@@ -17,12 +17,27 @@ export default function handler(
   }
 
   switch (req.method) {
+    case 'GET':
+      return getEntry(req, res);
+
     case 'PUT':
       return updateEntry(req, res);
 
     default:
       return res.status(405).json({ message: 'Method not allowed' });
   }
+}
+
+async function getEntry(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const { id } = req.query;
+
+  await db.connect();
+  const entry = await Entry.findById(id);
+  await db.disconnect();
+
+  if (entry) return res.status(200).json(entry);
+
+  return res.status(404).json({ message: `Entry not found: ${id}` });
 }
 
 async function updateEntry(req: NextApiRequest, res: NextApiResponse<Data>) {
