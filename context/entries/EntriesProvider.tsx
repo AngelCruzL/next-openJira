@@ -6,10 +6,10 @@ import {
   useReducer,
 } from 'react';
 
+import { entriesApi } from '../../apis';
 import { Entry } from '../../interfaces';
 import { EntriesContext } from './EntriesContext';
 import { entriesReducer } from './entriesReducer';
-import { entriesApi } from '../../apis';
 
 export type EntriesState = {
   entries: Entry[];
@@ -38,8 +38,20 @@ export const EntriesProvider: FC<PropsWithChildren> = ({
     dispatch({ type: 'Entry - Add Entry', payload: data });
   };
 
-  const updateEntry = (entry: Entry): void => {
-    dispatch({ type: 'Entry - Update Entry', payload: entry });
+  const updateEntry = async ({
+    status,
+    description,
+    _id,
+  }: Entry): Promise<void> => {
+    try {
+      const { data } = await entriesApi.put<Entry>(`/entries/${_id}`, {
+        status,
+        description,
+      });
+      dispatch({ type: 'Entry - Update Entry', payload: data });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
