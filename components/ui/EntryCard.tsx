@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react';
+import { FC, PropsWithChildren, ReactElement } from 'react';
 import {
   Card,
   CardActionArea,
@@ -7,12 +7,20 @@ import {
   Typography,
 } from '@mui/material';
 
-export const EntryCard: FC = (): ReactElement => {
+import { Entry } from '../../interfaces';
+
+interface Props extends PropsWithChildren {
+  entry: Entry;
+}
+
+export const EntryCard: FC<Props> = ({
+  entry: { description, createdAt },
+}): ReactElement => {
   return (
     <Card sx={{ marginBlockEnd: 2 }}>
       <CardActionArea>
         <CardContent>
-          <Typography sx={{ whiteSpace: 'pre-line' }}>Description</Typography>
+          <Typography sx={{ whiteSpace: 'pre-line' }}>{description}</Typography>
         </CardContent>
 
         <CardActions
