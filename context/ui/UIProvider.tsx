@@ -15,7 +15,18 @@ export const UIProvider: FC<PropsWithChildren> = ({
 }): ReactElement => {
   const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
+  const openSidebar = () => dispatch({ type: 'UI - Open Sidebar' });
+  const closeSidebar = () => dispatch({ type: 'UI - Close Sidebar' });
+
   return (
-    <UIContext.Provider value={{ isSidebarOpen: false }}></UIContext.Provider>
+    <UIContext.Provider
+      value={{
+        ...state,
+        openSidebar,
+        closeSidebar,
+      }}
+    >
+      {children}
+    </UIContext.Provider>
   );
 };
