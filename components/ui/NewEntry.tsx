@@ -1,12 +1,13 @@
 import { ChangeEvent, FC, ReactElement, useContext, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import { Add, SaveOutlined } from '@mui/icons-material';
-import { EntriesContext } from '../../context/entries';
+
+import { EntriesContext, UIContext } from '../../context';
 
 export const NewEntry: FC = (): ReactElement => {
   const { addNewEntry } = useContext(EntriesContext);
+  const { setIsAddingEntry, isAddingEntry } = useContext(UIContext);
 
-  const [isAddingEntry, setIsAddingEntry] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [isTouched, setIsTouched] = useState<boolean>(false);
 
